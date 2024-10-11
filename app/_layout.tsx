@@ -1,37 +1,50 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { Stack } from "expo-router";
+import { ThemeProvider as RNEThemeProvider } from "@rneui/themed";
+import { theme } from "../theme";
+import { getThemePreference } from "../theme/utils";
+import { useEffect, useState } from "react";
+import { useThemeStore } from "../theme/useThemeState";
+import {
+  ThemeProvider,
+  DefaultTheme,
+  DarkTheme,
+} from "@react-navigation/native";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+const queryClient = new QueryClient();
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
-
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+export default function Layout() {
+  const { isDarkMode, setTheme } = useThemeStore();
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
+    getThemePreference().then((value) => setTheme(value === "dark"));
+  }, [setTheme]);
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
+    <RNEThemeProvider theme={{ ...theme, mode: isDarkMode ? "dark" : "light" }}>
+      <ThemeProvider value={isDarkMode ? DarkTheme : DefaultTheme}>
+        <QueryClientProvider client={queryClient}>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="addJournal"
+              options={{ title: "Add Journal" }}
+            />
+            <Stack.Screen
+              name="journalView"
+              options={{ title: "Journal View" }}
+            />
+            <Stack.Screen
+              name="addHabit"
+              options={{ title: "Add Habit", presentation: "modal" }}
+            />
+            <Stack.Screen
+              name="habitPage"
+              options={{ title: "Habit Page", presentation: "modal" }}
+            />
+          </Stack>
+        </QueryClientProvider>
+      </ThemeProvider>
+    </RNEThemeProvider>
   );
 }
