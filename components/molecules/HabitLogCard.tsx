@@ -5,23 +5,31 @@ import { Icon } from "@rneui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import { deleteHabitLog } from "@/db/database";
 import { useQueryClient } from "@tanstack/react-query";
+import { useThemeStore } from "@/theme/useThemeState";
 
 const HabitLogCard = ({
   habitLog,
   index,
+  isNumeric,
+  unit,
 }: {
   habitLog: HabitLog;
   index: number;
+  isNumeric: boolean;
+  unit: string;
 }) => {
+  const { theme } = useThemeStore();
   const client = useQueryClient();
   return (
     <Card containerStyle={styles.card}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        {habitLog.numericValue !== null && (
-          <Text style={styles.numericValue}>{habitLog.numericValue}</Text>
+        {isNumeric && (
+          <Text style={[styles.numericValue, { color: theme.colors.text }]}>
+            {habitLog.numericValue} {unit}
+          </Text>
         )}
         <View style={styles.header}>
-          <Text style={styles.date}>
+          <Text style={[styles.date, { color: theme.colors.text }]}>
             {new Date(habitLog.date).toLocaleDateString("en-US", {
               year: "numeric",
               month: "long",
@@ -30,7 +38,6 @@ const HabitLogCard = ({
               minute: "2-digit",
             })}
           </Text>
-          <Icon name="calendar" type="font-awesome" color="#517fa4" />
           <Ionicons
             name="trash"
             size={24}
@@ -63,7 +70,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   numericValue: {
-    fontSize: 14,
+    fontSize: 24,
     color: "#333",
     marginVertical: 5,
   },

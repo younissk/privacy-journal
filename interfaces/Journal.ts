@@ -35,3 +35,17 @@ export interface Category {
   name: string;
   color: string;
 }
+
+export interface JournalFlow {
+  id?: number;
+  name: string;
+  description: string;
+}
+
+export interface FlowStep {
+  id?: number;
+  flowId: number;
+  stepType: "quote" | "prompt" | "habit_checkin" | "empty_journal";
+  content: string;
+}
+

@@ -1,16 +1,40 @@
-import { Ionicons } from '@expo/vector-icons';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Tabs } from 'expo-router';
+// /(tabs)/_layout.tsx
+import { Ionicons } from "@expo/vector-icons";
+import { Tabs } from "expo-router";
+import { useTheme } from "@react-navigation/native";
 
 export default function TabLayout() {
+  const { colors } = useTheme();
+
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: 'blue' }}>
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.text,
+        tabBarStyle: {
+          backgroundColor: colors.card,
+          borderTopColor: colors.border || "#cccccc",
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: "600",
+        },
+        headerStyle: {
+          backgroundColor: colors.card,
+        },
+        headerTitleStyle: {
+          color: colors.text,
+          fontWeight: "bold",
+        },
+        headerTintColor: colors.primary,
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
           title: "Home",
-          tabBarIcon: ({ color }) => (
-            <Ionicons size={28} name="home" color={color} />
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons size={size} name="home-outline" color={color} />
           ),
         }}
       />
@@ -18,8 +42,8 @@ export default function TabLayout() {
         name="journals"
         options={{
           title: "Journals",
-          tabBarIcon: ({ color }) => (
-            <Ionicons size={28} name="journal" color={color} />
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons size={size} name="book-outline" color={color} />
           ),
         }}
       />
@@ -27,8 +51,17 @@ export default function TabLayout() {
         name="habits"
         options={{
           title: "Habits",
-          tabBarIcon: ({ color }) => (
-            <Ionicons size={28} name="refresh-circle-outline" color={color} />
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons size={size} name="checkbox-outline" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="flows"
+        options={{
+          title: "Flows",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons size={size} name="infinite-outline" color={color} />
           ),
         }}
       />

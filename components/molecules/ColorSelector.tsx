@@ -1,9 +1,12 @@
-import { View, StyleSheet } from "react-native";
-import { TouchableOpacity } from "react-native";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { FlatList } from "react-native";
-import { Dialog } from "@rneui/themed";
-import { useState } from "react";
+import React, { useState } from "react";
+import {
+  View,
+  TouchableOpacity,
+  Modal,
+  FlatList,
+  StyleSheet,
+  Text,
+} from "react-native";
 
 const ColorSelector = ({
   color,
@@ -24,53 +27,57 @@ const ColorSelector = ({
     "#65AFFF",
     "#FB5607",
     "#FFBE0B",
+    "#000000",
+    "#FFFFFF",
+    "#F3F3F3",
   ];
 
   return (
     <View>
       <TouchableOpacity
-        style={{ marginHorizontal: 10 }}
+        style={styles.colorButton}
         onPress={() => setOpenPopup(true)}
       >
         <View
-          style={{
-            width: 24,
-            height: 24,
-            backgroundColor: color,
-            borderRadius: 100,
-          }}
+          style={[styles.colorPreview, { backgroundColor: color }]}
         />
       </TouchableOpacity>
-      {openPopup && (
-        <Dialog
-          isVisible={openPopup}
-          onBackdropPress={() => setOpenPopup(false)}
-        >
-          <FlatList
-            data={colorOptions}
-            numColumns={5}
-            keyExtractor={(item) => item}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => {
-                  setColor(item);
-                  setOpenPopup(false);
-                }}
-                style={styles.iconContainer}
-              >
-                <View
-                  style={{
-                    width: 24,
-                    height: 24,
-                    backgroundColor: item,
-                    borderRadius: 100,
+      <Modal visible={openPopup} transparent animationType="slide">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Select Color</Text>
+            <FlatList
+              data={colorOptions}
+              numColumns={5}
+              keyExtractor={(item) => item}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    setColor(item);
+                    setOpenPopup(false);
                   }}
-                />
-              </TouchableOpacity>
-            )}
-          />
-        </Dialog>
-      )}
+                  style={styles.colorOption}
+                >
+                  <View
+                    style={[
+                      styles.colorCircle,
+                      { backgroundColor: item },
+                      color === item && styles.selectedColorCircle,
+                    ]}
+                  />
+                </TouchableOpacity>
+              )}
+              contentContainerStyle={styles.colorList}
+            />
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setOpenPopup(false)}
+            >
+              <Text style={styles.closeButtonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -78,10 +85,65 @@ const ColorSelector = ({
 export default ColorSelector;
 
 const styles = StyleSheet.create({
-  iconContainer: {
-    flex: 1,
+  colorButton: {
     alignItems: "center",
-    justifyContent: "center",
+  },
+  colorPreview: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: "#ccc",
+  },
+  buttonText: {
+    marginTop: 5,
+    fontSize: 14,
+    color: "#6200EE",
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "transparent",
+    justifyContent: "flex-end",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    paddingTop: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 40,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  colorList: {
+    alignItems: "center",
+  },
+  colorOption: {
     margin: 10,
+    alignItems: "center",
+  },
+  colorCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#ccc",
+  },
+  selectedColorCircle: {
+    borderWidth: 2,
+    borderColor: "#6200EE",
+  },
+  closeButton: {
+    marginTop: 20,
+    alignItems: "center",
+  },
+  closeButtonText: {
+    fontSize: 16,
+    color: "#6200EE",
   },
 });

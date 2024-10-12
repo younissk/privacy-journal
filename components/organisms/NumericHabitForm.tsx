@@ -1,48 +1,50 @@
-import { View, Text, TextInput } from "react-native";
-import { Picker } from "@react-native-picker/picker";
-import { useState } from "react";
+import React from "react";
+import { View, TextInput, StyleSheet } from "react-native";
 
-const NumericHabitForm = () => {
-  const [unit, setUnit] = useState<string>("");
-  const [goal, setGoal] = useState<number>(0);
-
+const NumericHabitForm = ({
+  unit,
+  setUnit,
+  goal,
+  setGoal,
+}: {
+  unit: string;
+  setUnit: (value: string) => void;
+  goal: string;
+  setGoal: (value: string) => void;
+}) => {
   return (
-    <View style={{ display: "flex", gap: 10 }}>
-      <Text>Numeric Habit Form</Text>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <Text>Unit</Text>
-        <TextInput
-          placeholder="Unit (e.g. minutes, reps, etc.)"
-          value={unit}
-          onChangeText={setUnit}
-          style={{
-            borderWidth: 1,
-            flex: 1,
-            borderColor: "#ccc",
-            borderRadius: 5,
-            padding: 5,
-            marginLeft: 10,
-          }}
-        />
-      </View>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <Text>Day Goal</Text>
-        <TextInput
-          keyboardType="numeric"
-          value={goal.toString()}
-          onChangeText={(text) => setGoal(parseInt(text))}
-          style={{
-            borderWidth: 1,
-            flex: 1,
-            borderColor: "#ccc",
-            borderRadius: 5,
-            padding: 5,
-            marginLeft: 10,
-          }}
-        />
-      </View>
+    <View>
+      <TextInput
+        placeholder="Unit (e.g., km, reps)"
+        style={styles.input}
+        value={unit}
+        onChangeText={setUnit}
+        placeholderTextColor="#aaa"
+      />
+      <TextInput
+        placeholder="Goal (e.g., 5)"
+        style={styles.input}
+        value={goal}
+        onChangeText={setGoal}
+        keyboardType="numeric"
+        placeholderTextColor="#aaa"
+      />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  input: {
+    height: 50,
+    borderColor: "#E0E0E0",
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    fontSize: 16,
+    backgroundColor: "#fff",
+    color: "#333",
+    marginBottom: 15,
+  },
+});
 
 export default NumericHabitForm;

@@ -1,48 +1,67 @@
-import { View } from "react-native";
+import React from "react";
+import { Dimensions, StyleSheet, View } from "react-native";
 import { LineChart } from "react-native-chart-kit";
-import { Dimensions } from "react-native";
 import useGetAllHabitLogsOfHabit from "@/db/useGetAllHabitLogsOfHabit";
 
 const HabitChart = ({ habitId }: { habitId: number }) => {
   const { data: habitLogs } = useGetAllHabitLogsOfHabit(habitId);
 
   const chartData = {
-    labels: habitLogs?.map(log => new Date(log.date).toLocaleDateString()) || [],
+    labels:
+      habitLogs?.map((log) =>
+        new Date(log.date).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        })
+      ) || [],
     datasets: [
       {
-        data: habitLogs?.map(log => log.numericValue) || [], // Assuming 'progress' is a field in habitLog
+        data: habitLogs?.map((log) => log.numericValue || 0) || [],
+        color: () => "#6200EE",
       },
     ],
   };
 
-  const sanitizedData = chartData.datasets.map(dataset => ({
-    ...dataset,
-    data: dataset.data.map(value => value ?? 0) // Replace undefined with 0 or any default number
-  }));
-
   return (
+    <View style={styles.chartContainer}>
       <LineChart
-        data={{ ...chartData, datasets: sanitizedData }}
-        width={Dimensions.get("window").width} // from react-native
+        data={chartData}
+        width={Dimensions.get("window").width - 30}
         height={220}
         yAxisLabel=""
-        yAxisSuffix="%"
+        yAxisSuffix=""
+        yAxisInterval={1}
         chartConfig={{
-          backgroundColor: "#e26a00",
-          backgroundGradientFrom: "#fb8c00",
-          backgroundGradientTo: "#ffa726",
+          backgroundColor: "#fff",
+          backgroundGradientFrom: "#fff",
+          backgroundGradientTo: "#fff",
           decimalPlaces: 2,
-          color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-          labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+          color: (opacity = 1) => `rgba(98, 0, 238, ${opacity})`,
+          labelColor: (opacity = 1) => `rgba(98, 0, 238, ${opacity})`,
           propsForDots: {
-            r: "6",
+            r: "4",
             strokeWidth: "2",
-            stroke: "#ffa726",
+            stroke: "#6200EE",
+          },
+          propsForBackgroundLines: {
+            stroke: "#E3E3E3",
           },
         }}
         bezier
+        style={styles.chart}
       />
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  chartContainer: {
+    alignItems: "center",
+    marginTop: 15,
+  },
+  chart: {
+    borderRadius: 10,
+  },
+});
 
 export default HabitChart;
